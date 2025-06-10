@@ -1,128 +1,154 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"/>
-<title>Rune Circle Builder</title>
-<style>
-  body { font-family: sans-serif; display: flex; }
-  #controls { margin-left: 1em; }
-  #rune-list button { display:block; margin:2px 0; }
-  #canvas { border: 1px solid #444; background:#fafafa; }
-</style>
-</head>
-<body>
-<svg id="canvas" width="500" height="500"></svg>
-<div id="controls">
-  <div id="level"></div>
-  <div id="rune-list"></div>
-  <button id="add-circle">Add Inner Circle</button>
-  <button id="up-circle">Up One Level</button>
-  <pre id="interpretation"></pre>
-</div>
-<script>
-// Simple vector paths for a few sample runes.  Each rune fits in a
-// 20×20 square centered on (0,0).
-const runes = [
-  {name: 'Ansuz', meaning: 'word, knowledge',
-   path: 'M0,-20 L0,20 M0,0 L12,-10 M0,0 L12,10'},
-  {name: 'Laguz', meaning: 'water, flow',
-   path: 'M0,-20 L0,20 M0,-10 Q8,0 0,10'},
-  {name: 'Kenaz', meaning: 'fire, clarification',
-   path: 'M-8,-20 L8,0 L-8,20'},
-  {name: 'Nauthiz', meaning: 'restriction, cost',
-   path: 'M0,-20 L0,20 M-8,-8 L8,8'},
-  {name: 'Raidho', meaning: 'path, direction',
-   path: 'M-5,-20 L-5,20 M-5,-10 L8,0 L-5,10'}
+<!DOCTYPE html >
+< html lang = "ru" > 
+< голова >
+< meta charset = "UTF-8" /> 
+<title> Создатель рунического круга </title>​​
+< стиль >
+  тело { семейство шрифтов : sans-serif; отображение : flex; }
+  #элементы управления { margin-left : 1em ; }
+  # кнопка списка рун { display :block; margin : 2px 0 ; }
+  
+  #canvas { border : 1px solid #444 ; background : #fafafa ; }
+</ стиль >
+</head>​​
+< тело >
+< svg id = "холст" ширина = "500" высота = "500" > </ svg >   
+< div id = "элементы управления" > 
+  < div id = "уровень" > </ div > 
+  < div id = "список-рун" > </ div > 
+  < button id = " add-circle" > Добавить внутренний круг </button> 
+  < button id = " up-circle" > На один уровень вверх </button> 
+  < pre id = "интерпретация" > </ pre > 
+</ див >
+< сценарий >
+// Простые векторные пути для нескольких образцов рун. Каждая руна вписывается в
+// Квадрат 20×20 с центром в точке (0,0).
+константные руны = [
+  { имя : 'Ансуз' , значение : 'слово, знание' ,
+   путь : 'M0,-20 L0,20 M0,0 L12,-10 M0,0 L12,10' },
+  { имя : 'Лагуз' , значение : 'вода, поток' ,
+   путь : 'M0,-20 L0,20 M0,-10 Q8,0 0,10' },
+  { имя : 'Кеназ' , значение : 'огонь, очищение' ,
+   путь : 'M-8,-20 L8,0 L-8,20' },
+  { имя : 'Наутиз' , значение : 'ограничение, стоимость' ,
+   путь : 'M0,-20 L0,20 M-8,-8 L8,8' },
+  { имя : 'Raidho' , значение : 'путь, направление' ,
+   путь : 'М-5,-20 Л-5,20 М-5,-10 Л8,0 Л-5,10' }
 ];
 
-class Circle {
-  constructor(radius) {
-    this.radius = radius;
-    this.runes = [];
+класс Круг {
+ 
+  конструктор ( радиус ) {
+    это . радиус = радиус;
+    это . руны = [];
   }
 }
 
-const circles = [new Circle(200)];
-let current = 0;
+константные круги = [ новый круг ( 200 )];
+ 
+пусть ток = 0 ;
 
-const svg = document.getElementById('canvas');
-const runeList = document.getElementById('rune-list');
-const interpretation = document.getElementById('interpretation');
-const levelDiv = document.getElementById('level');
+const svg = document.getElementById ( 'canvas' ) ;
+const runeList = document.getElementById ( 'rune-list ' ) ;
+константа интерпретация = документ.getElementById ( 'интерпретация ' )
+ ;
+const levelDiv = document.getElementById ( 'level ' ) ;
 
-function draw() {
-  svg.innerHTML = '';
-  levelDiv.textContent = 'Current circle level: ' + current;
-  circles.forEach((circle, idx) => {
-    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    c.setAttribute('cx', 250);
-    c.setAttribute('cy', 250);
-    c.setAttribute('r', circle.radius);
-    c.setAttribute('fill', 'none');
-    c.setAttribute('stroke', '#000');
-    g.appendChild(c);
-    circle.runes.forEach((rune, i) => {
-      const angle = (i / circle.runes.length) * 2 * Math.PI - Math.PI / 2;
-      const x = 250 + circle.radius * Math.cos(angle);
-      const y = 250 + circle.radius * Math.sin(angle);
-      const rg = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-      rg.setAttribute('transform', `translate(${x},${y})`);
-      const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      p.setAttribute('d', rune.path);
-      p.setAttribute('fill', 'none');
-      p.setAttribute('stroke', '#000');
-      p.setAttribute('stroke-width', 2);
-      rg.appendChild(p);
-      g.appendChild(rg);
+функция рисования ( ) {
+ 
+  svg.innerHTML = ' '
+ ;
+  levelDiv.textContent = 'Текущий уровень круга: ' + current
+ ;
+  круги. forEach ( ( круг, idx ) => {
+    const g = document.createElementNS ( ' http://www.w3.org/2000/svg' , 'g' )
+ ;
+    const c = document.createElementNS ( ' http://www.w3.org/2000/svg' , 'circle' )
+ ;
+    c.setAttribute ( 'cx' , 250 )
+ ;
+    c.setAttribute ( 'cy' , 250 )
+ ;
+    c.setAttribute ( 'r' , circle.radius ) ;
+    c.setAttribute ( 'fill' , 'none' ) ;
+    c.setAttribute ( 'stroke' , '#000' )
+ ;
+    г. appendChild (c);
+    круг. руны . forEach ( ( руна, я ) => {
+      угол const = (i / окружность. руны . длина ) * 2 * Матем . ПИ - Матем . ПИ / 2 ;
+      const x = 250 + окружность. радиус * Математика . cos (угол);
+      const y = 250 + окружность. радиус * Матем . синус (угол);
+      const rg = document.createElementNS ( ' http://www.w3.org/2000/svg' , 'g' )
+ ;
+      rg.setAttribute ( 'transform' , ` translate( ${x} , ${y} )` );
+      const p = document.createElementNS ( ' http://www.w3.org/2000/svg' , 'path' )
+ ;
+      p.setAttribute ( 'd' , rune.path )
+ ;
+      p.setAttribute ( 'fill' , 'none' ) ;
+      p.setAttribute ( 'stroke' , '#000' )
+ ;
+      p.setAttribute ( 'ширина-штриха' , 2 ) ;
+      rg.appendChild (p)
+ ;
+      г. appendChild (rg);
     });
-    svg.appendChild(g);
+    svg.appendChild (г)
+ ;
   });
-  interpret();
+  интерпретировать ();
 }
 
-function interpret() {
-  const words = [];
-  circles.forEach((circle, idx) => {
-    circle.runes.forEach(r => words.push(r.meaning));
+функция интерпретирует ( ) {
+ 
+  константные слова = [];
+  круги. forEach ( ( круг, idx ) => {
+    круг.руны.forEach ( r = > слова.толчок ( r.значение ) ) ;
+​
   });
-  if (words.length) {
-    interpretation.textContent = 'This ritual combines: ' + words.join(', ');
-  } else {
-    interpretation.textContent = '';
+  если (слова. длина ) {
+    interpretation. textContent = 'Этот ритуал объединяет: ' + words. join ( ', ' );
+  } еще {
+    интерпретация. textContent = '' ;
   }
 }
 
-function addRuneToCircle(rune) {
-  circles[current].runes.push(rune);
-  draw();
+функция addRuneToCircle ( руна ) {
+ 
+  круги[текущий]. руны . толчок (руна);
+  рисовать ();
 }
 
-runes.forEach(r => {
-  const btn = document.createElement('button');
-  btn.textContent = r.name;
-  btn.addEventListener('click', () => addRuneToCircle(r));
-  runeList.appendChild(btn);
+руны.forEach ( r = > {
+  const btn = document.createElement ( 'button ' )
+ ;
+  btn.textContent = r.name ;
+​
+  btn.addEventListener ( 'click' , () => addRuneToCircle ( r ));
+ 
+  runeList.appendChild (кнопка)
+ ;
 });
 
-document.getElementById('add-circle').addEventListener('click', () => {
-  const radius = circles[current].radius - 50;
-  if (radius > 30) {
-    circles.push(new Circle(radius));
-    current = circles.length - 1;
-    draw();
+document.getElementById ( 'add-circle' ). addEventListener ( ' click' , ( ) => {
+  константный радиус = круги[текущий]. радиус - 50 ;
+  если (радиус > 30 ) {
+    круги. push ( новый круг (радиус));
+ 
+    ток = круги. длина - 1 ;
+    рисовать ();
   }
 });
 
-document.getElementById('up-circle').addEventListener('click', () => {
-  if (current > 0) {
-    circles.pop();
-    current -= 1;
-    draw();
+document.getElementById ( 'up-circle' ). addEventListener ( ' click' , ( ) => {
+  если (текущий > 0 ) {
+    круги. поп ();
+    ток -= 1 ;
+    рисовать ();
   }
 });
 
-draw();
-</script>
-</body>
+рисовать ();
+</ скрипт >
+</ тело >
 </html>

@@ -1,37 +1,41 @@
-import http.server
-import socketserver
-import webbrowser
-import pathlib
-import sys
+импорт http.сервера
+импорт сокетсервера
+импорт веб-браузера
+импортировать pathlib
+импортировать систему
 
-PORT = 8000
-if len(sys.argv) > 1:
-    try:
-        PORT = int(sys.argv[1])
-    except ValueError:
-        pass
+ПОРТ = 8000
+если len (sys.argv) > 1 :
+ 
+    пытаться :
+        ПОРТ = int (sys.argv[ 1 ])
+    за исключением ValueError:
+        проходить
 
 DIR = pathlib.Path(__file__).resolve().parent / "rune_circle"
 
-class Handler(http.server.SimpleHTTPRequestHandler):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, directory=str(DIR), **kwargs)
+Обработчик класса (http.server.SimpleHTTPRequestHandler):
+ 
+    def __init__ ( self, *args, **kwargs ):
+ 
+        super ().__init__(*args, directory= str (DIR), **kwargs)
 
 
-def main() -> None:
-    url = f"http://localhost:{PORT}/index.html"
-    try:
-        with socketserver.TCPServer(("", PORT), Handler) as httpd:
-            print(f"Serving {DIR} at {url}")
-            try:
-                webbrowser.open(url)
-            except Exception:
-                pass
+def main () -> Нет :
+ 
+    url = f"http://localhost: {PORT} /index.html"
+    пытаться :
+        с socketserver.TCPServer(( "" , PORT), Handler) в качестве httpd:
+            print ( f"Обслуживание {DIR} по адресу {url} " )
+            пытаться :
+                веб-браузер. открыть (url)
+            за исключением Исключение:
+                проходить
             httpd.serve_forever()
-    except OSError as exc:
-        print(f"Could not start server on port {PORT}: {exc}")
-        sys.exit(1)
+    за исключением OSError , как exc:
+        print ( f"Не удалось запустить сервер на порту {PORT} : {exc} " )
+        sys.выход( 1 )
 
 
-if __name__ == "__main__":
-    main()
+если __name__ == "__main__" :
+    основной()
