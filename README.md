@@ -1,19 +1,20 @@
-# Mystical
+# Мистический
 
-This repository contains a PostScript-based system for drawing magical circles and a small web prototype for experimenting with rune circles.
+В этом репозитории содержится система на основе PostScript для рисования магических кругов и небольшой веб-прототип для экспериментов с руническими кругами.
 
-## Running the Rune Circle Demo
+## Запуск демонстрации рунического круга
 
-1. Install Python 3 (if not already installed).
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
+1. Установите Python 3 (если он еще не установлен).
+2. Установите зависимости:
+   ```баш
+   pip install -r требования.txt
    ```
-3. From the repository root, run:
-   ```bash
-   python3 run_server.py
+3. Из корня репозитория запустите:
+   ```баш
+   python3 запустить_сервер.py
    ```
-   This starts a local web server and opens the demo in your browser.
-4. Use the interface to add runes or nested circles. The interpretation of the spell is shown below the buttons.
+   Это запустит локальный веб-сервер и откроет демо-версию в вашем браузере.
+4. Используйте интерфейс для добавления рун или вложенных кругов. Интерпретация заклинания показана под кнопками.
 
-The PostScript files for the original Mystical project are located under `mystical_ps/`. See `mystical_ps/README.md` for full documentation.
+Файлы PostScript для оригинального проекта Mystical находятся в `mystical_ps/` . Полную документацию
+ смотрите в `mystical_ps/README.md` .
