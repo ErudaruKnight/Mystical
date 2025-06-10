@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-import git
 from markdown_it import MarkdownIt
 import sys
 import re
 from datetime import date
-from glob import glob
+import os
 
 md_file = sys.argv[1]
 html_file = md_file.replace('.md', '.html')
@@ -15,8 +14,9 @@ if md_file == html_file:
 with open(md_file, 'r') as f:
     page_lines = list(f)
 title = page_lines[0]
-if not title.startswith ('# '):
-    raise ValueError(f"README.md in {location} should start with H1")
+if not title.startswith('# '):
+    raise ValueError(
+        f"README.md in {os.path.basename(md_file)} should start with H1")
 title = title[2:]
 
 # render markdown
