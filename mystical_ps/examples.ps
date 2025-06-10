@@ -1,0 +1,186 @@
+%!PS
+
+(dmmlib/base.ps) run
+(mystical.ps) run
+(dmmsigils.ps) run
+
+/xarray_example {
+    { 0 0 currentlinewidth 1.5 mul 0 360 arc fill } mystical_unscaled
+} def
+
+/array_example {
+    [ 0 1 2 1.5 40 360 (Hooray World) ] mystical_unscaled
+} def
+
+/dict_example {
+    << /longname (Mystical) /w 45 /h 8 /x 23 >> mystical_unscaled
+} def
+
+/link_example {
+    [ 0 1 2 1.5 40 360 
+        << /longname (Mystical) /w 45 /h 8 /x 23 >>
+    ]
+    mystical_unscaled
+} def
+/ligature_example {
+    { 
+        a /a a /a  
+        a /a a /a
+        a /a a /even { 2 mod 0 eq} def
+        a /a a
+    } mystical_unscaled
+} def
+
+sigil_bank /dot {
+    gsave
+        2 recip softscale
+        0 0 1 -90 90 arc closepath nstroke
+        0 0 0.5 circle nstroke
+        -1 1 goto 0 1 goto nstroke
+    grestore
+} put
+
+/code {
+    10 dict begin
+    /dot {currentlinewidth 1.5 mul 0 360 arc fill } def
+    /thicken_line {currentlinewidth 1.5 mul setlinewidth } def
+    thicken_line
+    0 0 1 0 360 arc stroke
+    0 0 0.5 180 360 arc
+    0 0 0.375 360 180 arcn closepath
+    fill
+    2 {
+        0.375 dup dot
+        gsave
+            0.375 dup translate
+            5 {
+                0 0 moveto 0.25 0 lineto stroke
+                45 rotate
+            } repeat
+        grestore
+        -1 1 scale
+    } repeat
+    [ 0 45 135 180 225 -45 ] {
+        gsave
+            rotate
+            1 0 moveto
+            2 0 lineto stroke
+        grestore
+    } forall
+   end
+} def
+/fake_token_radius 5 def
+/make_fake_token { /xflag arg /otype arg /literal arg
+    <<
+        /name literal /otype otype
+        /xflag xflag /aflag false
+        /position 0 /angle -90
+        /parent << /radius fake_token_radius >>
+        /width literal 20 string cvs stringwidth pop nonsigil_spacing 2 mul add
+    >>
+} def
+
+/draw_token {
+    mystical_dict begin
+        make_fake_token /fake_token arg
+        gsave
+            0 fake_token_radius translate
+            fake_token draw_sigil
+        grestore
+    end
+} def
+/operator_array { /array /nametype true draw_token } def
+/name_array { /array /nametype false draw_token } def
+/string_array { (array) /stringtype false draw_token } def
+/operator_foo { /foo /nametype true draw_token } def
+/name_foo { /foo /nametype false draw_token } def
+/name_foobar { /foobar /nametype false draw_token } def
+/operator_xor { /xor /nametype true draw_token } def
+
+(examples/quicksort.ps) run
+/quicksort_example {
+    /quicksort load mystical_get_spell /Spell arg
+    gsave
+        2.5 softscale
+        -1.125 -0.5 translate
+        /shrink 40 def
+        /ligature /quicksort Spell mystical_make_evocation_ligature def
+        Spell /components get 11 get /offset -13 addput
+        ligature /parent get /radius shrink addput
+        ligature /offset shrink neg addput
+        Spell /full_radius shrink neg addput
+        Spell mystical_scale_spell
+
+        mystical_dict begin
+            ligature draw_sigil
+            ligature draw_link
+        end
+    grestore
+
+} def
+
+(examples/gcd.ps) run
+/gcd_example {
+    /gcd load mystical_get_spell /Spell arg
+    gsave
+        2.5 softscale
+        -1.125 -0.5 translate
+        /shrink 30 def
+        /ligature /gcd Spell mystical_make_evocation_ligature def
+        % pull in loop body
+        Spell /components get 6 get /offset -13 addput
+        % pull in recursion body
+        Spell /components get 6 get 
+        /ring get /components get 4 get
+        /offset -5 addput
+        ligature /parent get /radius shrink addput
+        ligature /offset shrink neg addput
+        Spell /full_radius shrink neg addput
+        Spell mystical_scale_spell
+        mystical_dict begin
+            ligature draw_sigil
+            ligature draw_link
+        end
+    grestore
+} def
+
+/smily {
+    0 0 1 0 360 arc stroke
+    0 -0.25 0.5 180 360 arc fill
+    -0.5 1 0.5 {
+        0.25 0.125 0 360 arc fill
+    } for
+} def
+
+/smily_example {
+    /smily mystical_evoke
+} def
+
+%%EndProlog
+72 softscale
+4.25 5.5 translate
+% -4 -4.25 3.5 2.75 box stroke
+% quicksort_example
+% 0 3 translate
+% ligature_example
+% -1.5 -7.5 2 -1 box stroke
+
+1 softscale
+-1 1 translate
+90 rotate
+quicksort_example
+% gcd_example
+% -4 -2.5 2 2 box stroke
+
+% 4 dup scale
+% /code mystical_evoke
+% 0 0 1 circle stroke
+% smily_example
+
+% {
+%   /inch {72 mul} def
+% } mystical_unscaled
+
+
+
+showpage

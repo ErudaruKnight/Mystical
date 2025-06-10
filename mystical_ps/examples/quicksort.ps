@@ -1,0 +1,39 @@
+/quicksort {
+    2 dict begin
+        /domain exch def
+        /swap {
+            /a exch def /b exch def
+            domain a get domain b get
+            domain a 3 -1 roll put
+            domain b 3 -1 roll put
+        } def
+        domain length 2 ge {
+            % find pivot
+            /hi domain length 1 sub def
+            /pivot domain hi get def
+            % redistribute
+            /fulcrum 0 def
+            0 1 hi 1 sub { /i exch def
+                domain i get pivot le {
+                    i fulcrum swap
+                    /fulcrum fulcrum 1 add def
+                } if
+            } for
+            fulcrum hi swap
+            fulcrum 1 gt {
+                domain 0 fulcrum getinterval quicksort
+            } if
+            hi fulcrum sub 2 ge {
+                domain fulcrum 1 add hi fulcrum sub getinterval quicksort
+            } if
+        } if
+    end
+} def
+
+/test_quicksort {
+    /input [100 {rand 1000 mod } repeat] def
+    input quicksort
+    input ==
+} def
+
+% test_quicksort

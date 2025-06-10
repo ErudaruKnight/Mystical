@@ -1,0 +1,7 @@
+dmmlib
+.DS_Store
+.*.swp
+*.html
+push.sh
+.venv
+rsync.ignore
