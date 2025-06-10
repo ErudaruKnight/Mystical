@@ -10,7 +10,9 @@ class RuneCircle:
 
     def __init__(self) -> None:
         # Each level stores sigils by position
-        self.levels: Dict[int, Dict[int, Sigil]] = {i: {} for i in range(self.MAX_LEVEL + 1)}
+        self.levels: Dict[int, Dict[int, Sigil]] = {
+            i: {} for i in range(self.MAX_LEVEL + 1)
+        }
 
     def add_sigil(self, sigil: Sigil) -> None:
         level = sigil.level

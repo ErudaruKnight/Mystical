@@ -17,7 +17,12 @@ def create_example_circle() -> RuneCircle:
 def main() -> None:
     circle = create_example_circle()
     efficiency = compute_efficiency(circle)
-    print(f"\u042d\u0444\u0444\u0435\u043a\u0442\u0438\u0432\u043d\u043e\u0441\u0442\u044c: {efficiency:.0f}%")
+    print(
+        (
+            f"\u042d\u0444\u0444\u0435\u043a\u0442\u0438\u0432\u043d"
+            f"\u043e\u0441\u0442\u044c: {efficiency:.0f}%"
+        )
+    )
     render_circle(circle)
 
 
