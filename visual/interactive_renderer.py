@@ -119,10 +119,7 @@ def interactive_render(circle: RuneCircle):
             draw_sigil(screen, *mouse_pos, dragging_element)
 
         eff = calculate_efficiency(circle)
-        eff_text = font.render(f"Эффективность: {int(eff * 100)}%", True, (255, 255, 255))
-        screen.blit(eff_text, (20, 20))
-
-        name_text = font.render(desc.get("Название", "??"), True, (255, 255, 0))
+@@ -104,48 +126,54 @@ def interactive_render(circle: RuneCircle):
         effect_text = font.render(desc.get("Эффект", "??"), True, (180, 180, 255))
         rarity_text = font.render(f"Редкость: {desc.get('Редкость', '-')}", True, (255, 180, 180))
         prompt_text = font.render(desc.get("Пропорции", ""), True, (200, 200, 200))
