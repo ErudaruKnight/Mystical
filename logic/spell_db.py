@@ -1,6 +1,8 @@
 import sqlite3
 from typing import Optional, Tuple, List
 
+from .efficiency import combo_efficiency
+
 DB_FILE = "rune_system.db"
 
 
@@ -13,7 +15,8 @@ def initialize_db():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             combo TEXT UNIQUE,
             name TEXT,
-            description TEXT
+            description TEXT,
+            efficiency REAL
         )
         """
     )
@@ -22,21 +25,23 @@ def initialize_db():
 
 
 def add_spell(combo: str, name: str, description: str):
+    eff = combo_efficiency(combo)
     with sqlite3.connect(DB_FILE) as conn:
         conn.execute(
-            "INSERT OR IGNORE INTO spells (combo, name, description) VALUES (?, ?, ?)",
-            (combo, name, description),
+            "INSERT OR IGNORE INTO spells (combo, name, description, efficiency) VALUES (?, ?, ?, ?)",
+            (combo, name, description, eff),
         )
         conn.commit()
 
 
-def get_spell(combo: str) -> Optional[Tuple[str, str]]:
+def get_spell(combo: str) -> Optional[Tuple[str, str, float]]:
     with sqlite3.connect(DB_FILE) as conn:
         cur = conn.execute(
-            "SELECT name, description FROM spells WHERE combo = ?",
+            "SELECT name, description, efficiency FROM spells WHERE combo = ?",
             (combo,),
         )
-        return cur.fetchone()
+        row = cur.fetchone()
+        return row if row else None
 
 
 def populate_basic_spells():
