@@ -45,24 +45,8 @@ def get_spell(combo: str) -> Optional[Tuple[str, str, float]]:
 
 
 def populate_basic_spells():
-    """Fill the database with a few example spells and all simple combos."""
+    """Fill the database with auto-generated spell combinations."""
     initialize_db()
-
-    examples: List[Tuple[str, str, str]] = [
-        (
-            "water-fire-empty-earth-fire",
-            "Steam Blast",
-            "A burst of scalding steam damages foes.",
-        ),
-        (
-            "fire-fire-earth-water-air",
-            "Molten Cyclone",
-            "Spins a fiery whirlwind mixed with stone shards.",
-        ),
-    ]
-    for combo, name, desc in examples:
-        add_spell(combo, name, desc)
-
     populate_all_combos()
 
 
