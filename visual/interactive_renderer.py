@@ -13,6 +13,7 @@ CENTER = (CIRCLE_AREA_WIDTH // 2, HEIGHT // 2)
 RADIUS_STEP = 90
 BASE_RADIUS = 150
 ANGLE_OFFSET = -math.pi / 2
+DECOR_COLOR = (80, 60, 120)
 
 COLOR_MAP = {
     Element.FIRE: (255, 80, 0),
@@ -60,12 +61,13 @@ def interactive_render(circle: RuneCircle):
         Element.EARTH: (1450, 390),
     }
 
-    desc = {
+    default_desc = {
         "Название": "Нажми кнопку",
         "Эффект": "для генерации описания заклинания",
         "Эффективность": "-",
         "Пропорции": "-"
     }
+    desc = dict(default_desc)
 
     running = True
     while running:
@@ -76,9 +78,9 @@ def interactive_render(circle: RuneCircle):
 
         for level in range(1, 2):
             radius = level * RADIUS_STEP + BASE_RADIUS
-            pygame.draw.circle(screen, (60, 60, 60), CENTER, radius, 2)
-            pygame.draw.circle(screen, (60, 60, 60), CENTER, radius + 30, 1)
-            pygame.draw.circle(screen, (60, 60, 60), CENTER, radius - 30, 1)
+            pygame.draw.circle(screen, DECOR_COLOR, CENTER, radius, 3)
+            pygame.draw.circle(screen, DECOR_COLOR, CENTER, radius + 30, 1)
+            pygame.draw.circle(screen, DECOR_COLOR, CENTER, radius - 30, 1)
 
             inner_r = 0
             outer_r = radius
@@ -90,7 +92,10 @@ def interactive_render(circle: RuneCircle):
                 CENTER[0] + outer_r * math.cos(ANGLE_OFFSET),
                 CENTER[1] + outer_r * math.sin(ANGLE_OFFSET),
             )
-            pygame.draw.line(screen, (80, 80, 80), start_line, end_line, 2)
+            pygame.draw.line(screen, DECOR_COLOR, start_line, end_line, 2)
+
+            pygame.draw.line(screen, DECOR_COLOR, (CENTER[0] - radius, CENTER[1]), (CENTER[0] + radius, CENTER[1]), 1)
+            pygame.draw.line(screen, DECOR_COLOR, (CENTER[0], CENTER[1] - radius), (CENTER[0], CENTER[1] + radius), 1)
 
             # Decorative spokes and pentagon to resemble a ritual circle
             points = []
@@ -99,10 +104,10 @@ def interactive_render(circle: RuneCircle):
                 px = CENTER[0] + radius * math.cos(ang)
                 py = CENTER[1] + radius * math.sin(ang)
                 points.append((px, py))
-                pygame.draw.line(screen, (80, 80, 80), CENTER, (px, py), 1)
-            pygame.draw.polygon(screen, (80, 80, 80), points, 1)
+                pygame.draw.line(screen, DECOR_COLOR, CENTER, (px, py), 1)
+            pygame.draw.polygon(screen, DECOR_COLOR, points, 1)
             for i in range(5):
-                pygame.draw.line(screen, (60, 60, 60), points[i], points[(i + 2) % 5], 1)
+                pygame.draw.line(screen, DECOR_COLOR, points[i], points[(i + 2) % 5], 1)
 
         for level, sigils in circle.layers.items():
             radius = level * RADIUS_STEP + BASE_RADIUS
@@ -147,11 +152,17 @@ def interactive_render(circle: RuneCircle):
         screen.blit(effect_text, (20, 80))
         screen.blit(prompt_text, (20, 110))
 
-        # Кнопка генерации
+        # Кнопки управления
         generate_button = pygame.Rect(1440, 500, 200, 50)
+        reset_button = pygame.Rect(1440, 560, 200, 50)
+
         pygame.draw.rect(screen, (100, 100, 255), generate_button)
+        pygame.draw.rect(screen, (180, 60, 60), reset_button)
+
         button_text = font.render("Сгенерировать", True, (255, 255, 255))
+        reset_text = font.render("Сброс", True, (255, 255, 255))
         screen.blit(button_text, (generate_button.x + 10, generate_button.y + 10))
+        screen.blit(reset_text, (reset_button.x + 65, reset_button.y + 10))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -180,6 +191,10 @@ def interactive_render(circle: RuneCircle):
                             "Эффективность": str(int(calculate_efficiency(circle) * 100)),
                             "Пропорции": combo,
                         }
+                elif reset_button.collidepoint((mx, my)):
+                    circle.clear()
+                    desc = dict(default_desc)
+                    dragging_element = None
             elif event.type == pygame.MOUSEBUTTONUP:
                 if dragging_element:
                     mx, my = pygame.mouse.get_pos()

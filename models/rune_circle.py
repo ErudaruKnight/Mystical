@@ -16,3 +16,8 @@ class RuneCircle:
             self.layers[1][sigil.position] = sigil
         else:
             raise ValueError("Неверный уровень или позиция сигила")
+
+    def clear(self):
+        """Remove all sigils from the circle."""
+        self.core = None
+        self.layers = {1: [None for _ in range(5)]}
