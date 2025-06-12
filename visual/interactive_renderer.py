@@ -35,7 +35,7 @@ def draw_sigil(screen, x, y, element: Element):
         pygame.draw.polygon(screen, color, [(x, y - 15), (x - 15, y), (x, y + 15), (x + 15, y)])
 
 def current_combo(circle: RuneCircle) -> str:
-    """Return combination of sigils along the main line."""
+    """Return sigils from inner to outer ring along the bottom line."""
     parts = []
     for level in range(1, 6):
         sigil = circle.layers[level][0]
@@ -78,14 +78,15 @@ def interactive_render(circle: RuneCircle):
             radius = level * RADIUS_STEP + 100
             pygame.draw.circle(screen, (60, 60, 60), CENTER, radius, 1)
 
-        max_r = 5 * RADIUS_STEP + 100
+        inner_r = 1 * RADIUS_STEP + 100
+        outer_r = 5 * RADIUS_STEP + 100
         start_line = (
-            CENTER[0] + max_r * math.cos(ANGLE_OFFSET),
-            CENTER[1] + max_r * math.sin(ANGLE_OFFSET),
+            CENTER[0] + inner_r * math.cos(ANGLE_OFFSET),
+            CENTER[1] + inner_r * math.sin(ANGLE_OFFSET),
         )
         end_line = (
-            CENTER[0] - max_r * math.cos(ANGLE_OFFSET),
-            CENTER[1] - max_r * math.sin(ANGLE_OFFSET),
+            CENTER[0] + outer_r * math.cos(ANGLE_OFFSET),
+            CENTER[1] + outer_r * math.sin(ANGLE_OFFSET),
         )
         pygame.draw.line(screen, (80, 80, 80), start_line, end_line, 2)
 
@@ -118,10 +119,7 @@ def interactive_render(circle: RuneCircle):
             draw_sigil(screen, *mouse_pos, dragging_element)
 
         eff = calculate_efficiency(circle)
-        eff_text = font.render(f"Эффективность: {int(eff * 100)}%", True, (255, 255, 255))
-        screen.blit(eff_text, (20, 20))
-
-        name_text = font.render(desc.get("Название", "??"), True, (255, 255, 0))
+@@ -104,48 +126,54 @@ def interactive_render(circle: RuneCircle):
         effect_text = font.render(desc.get("Эффект", "??"), True, (180, 180, 255))
         rarity_text = font.render(f"Редкость: {desc.get('Редкость', '-')}", True, (255, 180, 180))
         prompt_text = font.render(desc.get("Пропорции", ""), True, (200, 200, 200))

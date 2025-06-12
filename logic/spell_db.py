@@ -40,8 +40,9 @@ def get_spell(combo: str) -> Optional[Tuple[str, str]]:
 
 
 def populate_basic_spells():
-    """Fill the database with a few example spells"""
+    """Fill the database with a few example spells and all simple combos."""
     initialize_db()
+
     examples: List[Tuple[str, str, str]] = [
         (
             "water-fire-empty-earth-fire",
@@ -56,3 +57,22 @@ def populate_basic_spells():
     ]
     for combo, name, desc in examples:
         add_spell(combo, name, desc)
+
+    populate_all_combos()
+
+
+def populate_all_combos():
+    """Generate every combination of five elements and store it."""
+    initialize_db()
+    elements = ["empty", "fire", "water", "earth", "air"]
+    count = 1
+    for e1 in elements:
+        for e2 in elements:
+            for e3 in elements:
+                for e4 in elements:
+                    for e5 in elements:
+                        combo = f"{e1}-{e2}-{e3}-{e4}-{e5}"
+                        name = f"Spell {count}"
+                        description = f"Auto generated combo {combo}."
+                        add_spell(combo, name, description)
+                        count += 1
