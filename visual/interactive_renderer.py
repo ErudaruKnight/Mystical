@@ -63,7 +63,7 @@ def interactive_render(circle: RuneCircle):
     desc = {
         "Название": "Нажми кнопку",
         "Эффект": "для генерации описания заклинания",
-        "Редкость": "-",
+        "Эффективность": "-",
         "Пропорции": "-"
     }
 
@@ -132,21 +132,20 @@ def interactive_render(circle: RuneCircle):
         if dragging_element:
             draw_sigil(screen, *mouse_pos, dragging_element)
 
-        eff = calculate_efficiency(circle)
-        eff_text = font.render(f"Эффективность: {int(eff * 100)}%", True, (255, 255, 255))
+        current_eff = calculate_efficiency(circle)
+        eff_display = desc.get("Эффективность", "-")
+        if eff_display == "-":
+            eff_display = str(int(current_eff * 100))
+        eff_text = font.render(f"Эффективность: {eff_display}%", True, (255, 255, 255))
         screen.blit(eff_text, (20, 20))
 
         name_text = font.render(desc.get("Название", "??"), True, (255, 255, 0))
         effect_text = font.render(desc.get("Эффект", "??"), True, (180, 180, 255))
-        rarity_text = font.render(f"Редкость: {desc.get('Редкость', '-')}", True, (255, 180, 180))
         prompt_text = font.render(desc.get("Пропорции", ""), True, (200, 200, 200))
-        coeff_text = font.render(f"Коэфф: {desc.get('Коэфф', '-')}", True, (200, 255, 200))
 
         screen.blit(name_text, (20, 50))
         screen.blit(effect_text, (20, 80))
-        screen.blit(rarity_text, (20, 110))
-        screen.blit(prompt_text, (20, 140))
-        screen.blit(coeff_text, (20, 170))
+        screen.blit(prompt_text, (20, 110))
 
         # Кнопка генерации
         generate_button = pygame.Rect(1440, 500, 200, 50)
@@ -171,15 +170,14 @@ def interactive_render(circle: RuneCircle):
                         desc = {
                             "Название": name,
                             "Эффект": descr,
-                            "Редкость": "-",
+                            "Эффективность": str(int(eff * 100)),
                             "Пропорции": combo,
-                            "Коэфф": f"{eff:.2f}",
                         }
                     else:
                         desc = {
                             "Название": "Неизвестно",
                             "Эффект": "Комбинация не найдена",
-                            "Редкость": "-",
+                            "Эффективность": str(int(calculate_efficiency(circle) * 100)),
                             "Пропорции": combo,
                         }
             elif event.type == pygame.MOUSEBUTTONUP:
