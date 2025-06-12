@@ -9,7 +9,9 @@ from logic.spell_db import get_spell, populate_basic_spells
 WIDTH, HEIGHT = 1920, 1080
 CIRCLE_AREA_WIDTH = 1200
 CENTER = (CIRCLE_AREA_WIDTH // 2, HEIGHT // 2)
-RADIUS_STEP = 70
+# Slightly larger circle for a more impressive ritual look
+RADIUS_STEP = 90
+BASE_RADIUS = 150
 ANGLE_OFFSET = -math.pi / 2
 
 COLOR_MAP = {
@@ -73,8 +75,10 @@ def interactive_render(circle: RuneCircle):
             draw_sigil(screen, *CENTER, circle.core.element)
 
         for level in range(1, 2):
-            radius = level * RADIUS_STEP + 100
-            pygame.draw.circle(screen, (60, 60, 60), CENTER, radius, 1)
+            radius = level * RADIUS_STEP + BASE_RADIUS
+            pygame.draw.circle(screen, (60, 60, 60), CENTER, radius, 2)
+            pygame.draw.circle(screen, (60, 60, 60), CENTER, radius + 30, 1)
+            pygame.draw.circle(screen, (60, 60, 60), CENTER, radius - 30, 1)
 
             inner_r = 0
             outer_r = radius
@@ -88,8 +92,20 @@ def interactive_render(circle: RuneCircle):
             )
             pygame.draw.line(screen, (80, 80, 80), start_line, end_line, 2)
 
+            # Decorative spokes and pentagon to resemble a ritual circle
+            points = []
+            for i in range(5):
+                ang = math.radians(72 * i) + ANGLE_OFFSET
+                px = CENTER[0] + radius * math.cos(ang)
+                py = CENTER[1] + radius * math.sin(ang)
+                points.append((px, py))
+                pygame.draw.line(screen, (80, 80, 80), CENTER, (px, py), 1)
+            pygame.draw.polygon(screen, (80, 80, 80), points, 1)
+            for i in range(5):
+                pygame.draw.line(screen, (60, 60, 60), points[i], points[(i + 2) % 5], 1)
+
         for level, sigils in circle.layers.items():
-            radius = level * RADIUS_STEP + 100
+            radius = level * RADIUS_STEP + BASE_RADIUS
             for i in range(5):
                 angle = math.radians((360 / 5) * i) + ANGLE_OFFSET
                 x = CENTER[0] + radius * math.cos(angle)
@@ -173,7 +189,7 @@ def interactive_render(circle: RuneCircle):
                     dy = my - CENTER[1]
                     dist = math.hypot(dx, dy)
                     for level in range(1, 2):
-                        radius = level * RADIUS_STEP + 100
+                        radius = level * RADIUS_STEP + BASE_RADIUS
                         if abs(dist - radius) < 20:
                             angle = (math.degrees(math.atan2(dy, dx)) + 360) % 360
                             adjusted = (angle - math.degrees(ANGLE_OFFSET)) % 360
