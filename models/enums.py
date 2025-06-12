@@ -1,5 +1,5 @@
 from enum import Enum
 
-
 class CastType(Enum):
-    UNKNOWN = 0
+    GENERATE_SIGILS = "generate"
+    CAST_SPELL = "cast"
