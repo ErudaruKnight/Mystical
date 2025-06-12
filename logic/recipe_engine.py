@@ -42,7 +42,6 @@ def build_recipe_from_circle(circle: RuneCircle) -> Recipe:
     for level, sigils in circle.layers.items():
         for sigil in sigils:
             if sigil:
-                level_weight = 1.0 / (level + 1)
-                recipe.add(sigil.element, level_weight)
+                recipe.add(sigil.element, 1.0)
 
     return recipe

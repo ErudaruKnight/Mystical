@@ -35,11 +35,9 @@ def draw_sigil(screen, x, y, element: Element):
         pygame.draw.polygon(screen, color, [(x, y - 15), (x - 15, y), (x, y + 15), (x + 15, y)])
 
 def current_combo(circle: RuneCircle) -> str:
-    """Return sigils from inner to outer ring along the bottom line."""
-    parts = []
-    for level in range(1, 6):
-        sigil = circle.layers[level][0]
-        parts.append(sigil.element.value if sigil else "empty")
+    """Return elements from the single ring starting at the guideline."""
+    sigils = circle.layers[1]
+    parts = [s.element.value if s else "empty" for s in sigils]
     return "-".join(parts)
 
 def interactive_render(circle: RuneCircle):
@@ -74,21 +72,21 @@ def interactive_render(circle: RuneCircle):
         if circle.core:
             draw_sigil(screen, *CENTER, circle.core.element)
 
-        for level in range(1, 6):
+        for level in range(1, 2):
             radius = level * RADIUS_STEP + 100
             pygame.draw.circle(screen, (60, 60, 60), CENTER, radius, 1)
 
-        inner_r = 1 * RADIUS_STEP + 100
-        outer_r = 5 * RADIUS_STEP + 100
-        start_line = (
-            CENTER[0] + inner_r * math.cos(ANGLE_OFFSET),
-            CENTER[1] + inner_r * math.sin(ANGLE_OFFSET),
-        )
-        end_line = (
-            CENTER[0] + outer_r * math.cos(ANGLE_OFFSET),
-            CENTER[1] + outer_r * math.sin(ANGLE_OFFSET),
-        )
-        pygame.draw.line(screen, (80, 80, 80), start_line, end_line, 2)
+            inner_r = 0
+            outer_r = radius
+            start_line = (
+                CENTER[0] + inner_r * math.cos(ANGLE_OFFSET),
+                CENTER[1] + inner_r * math.sin(ANGLE_OFFSET),
+            )
+            end_line = (
+                CENTER[0] + outer_r * math.cos(ANGLE_OFFSET),
+                CENTER[1] + outer_r * math.sin(ANGLE_OFFSET),
+            )
+            pygame.draw.line(screen, (80, 80, 80), start_line, end_line, 2)
 
         for level, sigils in circle.layers.items():
             radius = level * RADIUS_STEP + 100
@@ -174,7 +172,7 @@ def interactive_render(circle: RuneCircle):
                     dx = mx - CENTER[0]
                     dy = my - CENTER[1]
                     dist = math.hypot(dx, dy)
-                    for level in range(1, 6):
+                    for level in range(1, 2):
                         radius = level * RADIUS_STEP + 100
                         if abs(dist - radius) < 20:
                             angle = (math.degrees(math.atan2(dy, dx)) + 360) % 360
