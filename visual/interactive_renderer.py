@@ -9,7 +9,6 @@ from logic.spell_db import get_spell, populate_basic_spells
 WIDTH, HEIGHT = 1920, 1080
 CIRCLE_AREA_WIDTH = 1200
 CENTER = (CIRCLE_AREA_WIDTH // 2, HEIGHT // 2)
-# Slightly larger circle for a more impressive ritual look
 RADIUS_STEP = 90
 BASE_RADIUS = 150
 ANGLE_OFFSET = -math.pi / 2
@@ -21,6 +20,26 @@ COLOR_MAP = {
     Element.AIR: (200, 200, 200),
     Element.EARTH: (80, 180, 80),
 }
+
+def draw_wrapped_text(surface, text, font, color, x, y, max_width):
+    """Разбивает текст на строки и отображает их в заданной области."""
+    words = text.split(' ')
+    lines = []
+    current_line = ""
+
+    for word in words:
+        test_line = f"{current_line} {word}".strip()
+        if font.size(test_line)[0] <= max_width:
+            current_line = test_line
+        else:
+            lines.append(current_line)
+            current_line = word
+    if current_line:
+        lines.append(current_line)
+
+    for i, line in enumerate(lines):
+        rendered = font.render(line, True, color)
+        surface.blit(rendered, (x, y + i * font.get_height()))
 
 def draw_socket(screen, x, y, highlight=False):
     color = (100, 100, 100) if not highlight else (0, 255, 0)
@@ -137,20 +156,25 @@ def interactive_render(circle: RuneCircle):
         if dragging_element:
             draw_sigil(screen, *mouse_pos, dragging_element)
 
-        current_eff = calculate_efficiency(circle)
+        # Эффективность
         eff_display = desc.get("Эффективность", "-")
-        if eff_display == "-":
-            eff_display = str(int(current_eff * 100))
         eff_text = font.render(f"Эффективность: {eff_display}%", True, (255, 255, 255))
         screen.blit(eff_text, (20, 20))
 
+        # Название
         name_text = font.render(desc.get("Название", "??"), True, (255, 255, 0))
-        effect_text = font.render(desc.get("Эффект", "??"), True, (180, 180, 255))
-        prompt_text = font.render(desc.get("Пропорции", ""), True, (200, 200, 200))
-
         screen.blit(name_text, (20, 50))
-        screen.blit(effect_text, (20, 80))
-        screen.blit(prompt_text, (20, 110))
+
+        # Описание — многострочный вывод
+        draw_wrapped_text(
+            screen,
+            desc.get("Эффект", "??"),
+            font,
+            (180, 180, 255),
+            20,
+            80,
+            CIRCLE_AREA_WIDTH - 40
+        )
 
         # Кнопки управления
         generate_button = pygame.Rect(1440, 500, 200, 50)
